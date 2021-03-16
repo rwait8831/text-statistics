@@ -11,12 +11,27 @@ public class TextStatistics implements TextStatisticsInterface {
     private double avgWordLength;
 
     
-    public TextStatistics(File file, int lines, int chars, int words, int[] wordLengthCount, double avgWordLength, int[] letterFreq){
+    public TextStatistics(File file){
         this.file = file;
-        this.lines = lines;
-        this.chars = chars;
-        this.words = words;
-        this.avgWordLength = avgWordLength;
+        try{
+            Scanner fileScan = new Scanner(file);
+            while(fileScan.hasNextLine())
+            {
+                //System.out.println(fileScan.nextLine());
+                this.lines += 1;
+                String theLine = fileScan.nextLine();
+                Scanner lineScan = new Scanner(theLine);
+                lineScan.useDelimiter(DELIMITERS);
+                while(lineScan.hasNext()){
+                    String token = lineScan.next();
+                    
+                    this.words += 1;
+                    this.chars = words + token.length();
+                }
+                
+        
+            }
+        }
     }
 
     /**
@@ -63,16 +78,16 @@ public class TextStatistics implements TextStatisticsInterface {
         return avgWordLength;
     }
 
+    public String toString(){
+        return "Words: " + getWordCount() + "\nLines: " + getLineCount(); 
+    }
+
 
 }
 
 try{
     // Instantiate a new Scanner to read from the specified File
     Scanner fileScan = new Scanner(file);
-    int lines = 0;
-    int chars = 0;
-    int words = 0;
-    double avgWordLength = 0;
 
     // Iterate through every line of the file
     while(fileScan.hasNextLine())

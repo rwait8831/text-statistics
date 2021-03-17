@@ -1,7 +1,8 @@
 import java.io.*;
-import java.io.File;
 import java.util.Scanner;
+import java.util.Arrays;
 public class TextStatistics implements TextStatisticsInterface {
+    static final String DELIMITERS = "[\\W\\d_]+";
     private File file;
     private int lines;
     private int chars;
@@ -12,26 +13,47 @@ public class TextStatistics implements TextStatisticsInterface {
 
     
     public TextStatistics(File file){
+        String[] alpha = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
         this.file = file;
+        this.lines = 0;
+        this.chars = 0;
+        this.words = 0;
+        this.avgWordLength = 0;
+        this.wordLengthCount = new int[23];
+        this.letterFreq = new int[25];
+        int letters = 0;
         try{
             Scanner fileScan = new Scanner(file);
+            fileScan.useDelimiter(DELIMITERS);
             while(fileScan.hasNextLine())
             {
                 //System.out.println(fileScan.nextLine());
                 this.lines += 1;
                 String theLine = fileScan.nextLine();
+                this.chars = chars + theLine.length() + 1;
                 Scanner lineScan = new Scanner(theLine);
                 lineScan.useDelimiter(DELIMITERS);
                 while(lineScan.hasNext()){
                     String token = lineScan.next();
-                    
+                    int wordLength = token.length();
+                    if(wordLength >= 23){
+                        wordLengthCount[23] += 1;
+                    }
+                    else{
+                        wordLengthCount[wordLength] += 1;
+                    }
                     this.words += 1;
-                    this.chars = words + token.length();
+                    letters = letters + token.length();
                 }
-                
+                this.avgWordLength = (letters/words);
+                lineScan.close();
         
             }
+            fileScan.close();
+        } catch(FileNotFoundException e){
+            System.out.println("No File");
         }
+
     }
 
     /**
@@ -79,12 +101,14 @@ public class TextStatistics implements TextStatisticsInterface {
     }
 
     public String toString(){
-        return "Words: " + getWordCount() + "\nLines: " + getLineCount(); 
+        return "Words: " + getWordCount() + "\nLines: " + getLineCount() + "\nCharacters: " + getCharCount() + "\nAverage Word Length: " + getAverageWordLength(); 
     }
 
 
 }
 
+
+/*
 try{
     // Instantiate a new Scanner to read from the specified File
     Scanner fileScan = new Scanner(file);
@@ -110,4 +134,4 @@ try{
     System.out.println(lines);
 } catch(FileNotFoundException e){
     System.out.println("File not found");
-}
+} */

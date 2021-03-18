@@ -9,11 +9,12 @@ public class TextStatistics implements TextStatisticsInterface {
     private int words;
     private int[] wordLengthCount;
     private int[] letterFreq;
+    private String[] longWords;
     private double avgWordLength;
 
     
     public TextStatistics(File file){
-        String[] alpha = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+        char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
         this.file = file;
         this.lines = 0;
         this.chars = 0;
@@ -43,7 +44,17 @@ public class TextStatistics implements TextStatisticsInterface {
                         wordLengthCount[wordLength] += 1;
                     }
                     this.words += 1;
-                    letters = letters + token.length();
+                    letters = letters + wordLength;
+                    for(int i = 0; i < wordLength; i++){
+                        char theLetter = token.charAt(i);
+                            for(int j = 0; j < alpha.length; j++){
+                                if(theLetter == alpha[j]){
+                                    letterFreq[j] += 1;
+                                }
+                            }
+                    }
+
+                    }
                 }
                 this.avgWordLength = (letters/words);
                 lineScan.close();
@@ -56,6 +67,7 @@ public class TextStatistics implements TextStatisticsInterface {
 
     }
 
+    // none of these methods have @param values
     /**
 	 * @return the number of characters in the text file
 	 */

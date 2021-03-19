@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.Scanner;
-import java.util.Arrays;
 public class TextStatistics implements TextStatisticsInterface {
     static final String DELIMITERS = "[\\W\\d_]+";
     private File file;
@@ -11,17 +10,20 @@ public class TextStatistics implements TextStatisticsInterface {
     private int[] letterFreq;
     private String[] longWords;
     private double avgWordLength;
+    private char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+    private String consoleBreak = "\n=========================================";
+    private String fileStat;
 
     
     public TextStatistics(File file){
-        char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
         this.file = file;
+        this.fileStat =  "\n+++Statistsics+++" + consoleBreak;
         this.lines = 0;
         this.chars = 0;
         this.words = 0;
         this.avgWordLength = 0;
         this.wordLengthCount = new int[23];
-        this.letterFreq = new int[25];
+        this.letterFreq = new int[26];
         int letters = 0;
         try{
             Scanner fileScan = new Scanner(file);
@@ -35,7 +37,7 @@ public class TextStatistics implements TextStatisticsInterface {
                 Scanner lineScan = new Scanner(theLine);
                 lineScan.useDelimiter(DELIMITERS);
                 while(lineScan.hasNext()){
-                    String token = lineScan.next();
+                    String token = lineScan.next().toLowerCase();
                     int wordLength = token.length();
                     if(wordLength >= 23){
                         wordLengthCount[23] += 1;
@@ -52,21 +54,17 @@ public class TextStatistics implements TextStatisticsInterface {
                                     letterFreq[j] += 1;
                                 }
                             }
+                        }
                     }
-
-                    }
+                    lineScan.close();
                 }
-                this.avgWordLength = (letters/words);
-                lineScan.close();
+                this.avgWordLength = ((double)letters/words);
+                fileScan.close();
         
-            }
-            fileScan.close();
-        } catch(FileNotFoundException e){
-            System.out.println("No File");
+            } catch(FileNotFoundException e){
+                System.out.println("+++Not a valid file+++");
         }
-
     }
-
     // none of these methods have @param values
     /**
 	 * @return the number of characters in the text file
@@ -105,6 +103,29 @@ public class TextStatistics implements TextStatisticsInterface {
         return wordLengthCount;
     }
 
+    public String printWordLengths(){
+        String lengths = "";
+        for(int i = 0; i < wordLengthCount.length; i++){
+            if(wordLengthCount[i] > 0){
+                lengths += "\n" + i + "\t\t\t" + wordLengthCount[i];
+            }
+        }
+        return lengths;
+    }
+
+    public String printLetterFreq(){
+        String lengths = "";
+        for(int i = 0; i < 13; i++){
+            if(letterFreq[i] > 0){
+                lengths += "\n" + alpha[i] + " = " + letterFreq[i] + "\t\t\t" + alpha[i+13] + " = " + letterFreq[i+13];
+            }
+            else{
+                lengths += "\n" + alpha[i] + " = 0" + "\t\t\t" + alpha[i+13] + " = " + letterFreq[i+13];
+            }
+        }
+        return lengths;
+    }
+
 	/**
 	 * @return the average word length in the text file
 	 */
@@ -113,37 +134,10 @@ public class TextStatistics implements TextStatisticsInterface {
     }
 
     public String toString(){
-        return "Words: " + getWordCount() + "\nLines: " + getLineCount() + "\nCharacters: " + getCharCount() + "\nAverage Word Length: " + getAverageWordLength(); 
+        return fileStat + "\nWords: " + getWordCount() + "\nLines: " + getLineCount() + "\nCharacters: " + getCharCount() 
+        + "\nAverage Word Length: " + getAverageWordLength() + "\n" + consoleBreak + "\n" + printLetterFreq() 
+        + "\n" + consoleBreak + "\n\nLength\t\t\tFrequency\n------\t\t\t---------" + printWordLengths() + consoleBreak + "\n"; 
     }
 
 
 }
-
-
-/*
-try{
-    // Instantiate a new Scanner to read from the specified File
-    Scanner fileScan = new Scanner(file);
-
-    // Iterate through every line of the file
-    while(fileScan.hasNextLine())
-    {
-        //System.out.println(fileScan.nextLine());
-        lines += 1;
-        String theLine = fileScan.nextLine();
-        Scanner lineScan = new Scanner(theLine);
-        lineScan.useDelimiter(DELIMITERS);
-        while(lineScan.hasNext()){
-            String token = lineScan.next();
-            
-            words += 1;
-            chars += token.length();
-        }
-        
-
-    }
-    fileScan.close();
-    System.out.println(lines);
-} catch(FileNotFoundException e){
-    System.out.println("File not found");
-} */

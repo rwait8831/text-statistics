@@ -8,13 +8,15 @@ public class TextStatistics implements TextStatisticsInterface {
     private int words;
     private int[] wordLengthCount;
     private int[] letterFreq;
-    private String[] longWords;
     private double avgWordLength;
     private char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
     private String consoleBreak = "\n=========================================";
     private String fileStat;
 
-    
+    /**
+     * @param one file object
+	 * no @return, sets the values of chars, words, lines, wordLengthCount, letterFreq, and averageWordLength
+	 */
     public TextStatistics(File file){
         this.file = file;
         this.fileStat =  "\n+++Statistsics+++" + consoleBreak;
@@ -103,6 +105,9 @@ public class TextStatistics implements TextStatisticsInterface {
         return wordLengthCount;
     }
 
+    /**
+	 * @return a better formatted string for the wordLengthCount array
+	 */
     public String printWordLengths(){
         String lengths = "";
         for(int i = 0; i < wordLengthCount.length; i++){
@@ -113,6 +118,9 @@ public class TextStatistics implements TextStatisticsInterface {
         return lengths;
     }
 
+    /**
+	 * @return a better formatted string for the letterFreq array
+	 */
     public String printLetterFreq(){
         String lengths = "";
         for(int i = 0; i < 13; i++){
